@@ -62,7 +62,7 @@ class BarcodeImage implements Cloneable {
              * in the matrix starting at the bottom left.
              * */
             for (int j = 0; j < strData[i].length(); j++) {
-                if (strData[i].charAt(j) == '*') {
+                if (strData[(strData.length - 1) - i].charAt(j) == '*') {
                     setPixel((MAX_HEIGHT - 1) - i, j, true);
                 } else {
                     setPixel((MAX_HEIGHT - 1) - i, j, false);
