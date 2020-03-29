@@ -5,7 +5,7 @@ public class assign4 {
         String[] sImageIn =
         {
            "                                               ",
-           "   a                                           ",
+           "                                               ",
            "                                               ",
            "     * * * * * * * * * * * * * * * * * * * * * ",
            "     *                                       * ",
@@ -18,8 +18,8 @@ public class assign4 {
            "     *****  ***  *  * *   ** ** **  *   * *    ",
            "     ***************************************** ",  
            "                                               ",
-           "                                              b",
-           "                                              l"
+           "                                               ",
+           "                                               "
   
         };
         System.out.println("Start Program");
@@ -57,40 +57,39 @@ class BarcodeImage {
         if(checkSize == true){
         //Left Corner points   
        // if(checkSize(strData) == true){
-        System.out.println("strData.length = " + strData.length);
-        System.out.println("strData[0].length() = " + strData[0].length());
+
             for(int strRow = 0; strRow < strData.length; strRow++){
                 for(int strCol = 0; strCol < strData[strRow].length(); strCol++){
-                  //  System.out.println("strData[" + strRow + "][" + strCol + "]");
-                    System.out.println("strData[strRow].charAt(strCol) = [" + strRow + "][" + strCol + "] " + strData[strRow].charAt(strCol));
+
                     if(strData[strRow].charAt(strCol) == '*'){
-                        beginOfArrayRow = strRow;
-                        beginOfArrayCol = strCol;
+                        endOfArrayRow = strRow;
+                        endOfArrayCol = strCol;
                     }
 
                 }
             }
-            System.out.println("***********************************************");
-            System.out.println("strData.length = " + strData.length);
-            System.out.println("strData[0].length() = " + strData[0].length());
+
             for(int strRow = strData.length - 1; strRow >= 0; strRow--){
                 for(int strCol = strData[strRow].length() - 1; strCol >= 0; strCol--){
-                    System.out.println("strData[strRow].charAt(strCol) = [" + strRow + "][" + strCol + "] " + strData[strRow].charAt(strCol));
-                    //System.out.println("strData[" + strRow + "][" + strCol + "]");
-                //for(int strCol = strData[strRow].length(); strCol >= 0; strCol--){
-                  //  System.out.println("strData[strRow].length() = " + strData[strRow].length());
-                  //  System.out.println("strData[" + strRow + "][" + strCol + "]");
-                // for(int strCol = strData[strRow].length(); strCol > 0; strCol--){
-                //     System.out.println("strData[strRow].charAt(strCol) = [" + strRow + "][" + strCol + "] " + strData[strRow].charAt(strCol));
-                //     if(strData[strRow].charAt(strCol) == '*'){
-                //         endOfArrayRow = strRow;
-                //         endOfArrayCol = strCol;
-                     }
 
+                    if(strData[strRow].charAt(strCol) == '*'){
+                        beginOfArrayRow = strRow;
+                        beginOfArrayCol = strCol;
+                    }
+                }
+
+                }
+                
+                for(int strRow1 = beginOfArrayRow; strRow1 <= endOfArrayRow; strRow1++){
+
+                    for(int strCol1 = beginOfArrayCol; strCol1 <= endOfArrayCol; strCol1++){
+                        
+                        if(strData[strRow1].charAt(strCol1) == '*' ? true:false ){
+                        }
                 }
             }
         }
     
     }
-//}
+}
 
