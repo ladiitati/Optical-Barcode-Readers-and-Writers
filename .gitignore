@@ -13,6 +13,9 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+BarcodeImage.class
+BarcodeIO.class
+tempCodeRunnerFile.java
 
 # External tool builders
 .externalToolBuilders/
