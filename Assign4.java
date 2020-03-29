@@ -63,9 +63,9 @@ class BarcodeImage implements Cloneable {
              * */
             for (int j = 0; j < strData[i].length(); j++) {
                 if (strData[i].charAt(j) == '*') {
-                    setPixel(MAX_HEIGHT - i, j, true);
+                    setPixel((MAX_HEIGHT - 1) - i, j, true);
                 } else {
-                    setPixel(MAX_HEIGHT - i, j, false);
+                    setPixel((MAX_HEIGHT - 1) - i, j, false);
                 }
             }
         }
@@ -101,6 +101,7 @@ class BarcodeImage implements Cloneable {
     }
 
     public void setPixel(int col, int row, boolean value) {
+//        System.out.println("col " + col + " row " + row);
         try {
             this.imageData[col][row] = value;
         } catch (Exception e) {
