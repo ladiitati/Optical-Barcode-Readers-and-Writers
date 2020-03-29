@@ -89,12 +89,12 @@ class BarcodeImage {
                        else {
                           imageData[MAX_HEIGHT - strData.length + strRow1][strCol1] = false;
                        }
+                    }
                 }
-            }
+
                 for(int strRow = 0; strRow < strData.length - 1; strRow++){
                    for(int strCol = 0; strCol < strData[strRow].length() - 1; strCol++){
-                       System.out.println("strData[strRow].charAt(strCol) = [" + strRow + "][" + strCol + "] " + strData[strRow].charAt(strCol) + " = " + imageData[MAX_HEIGHT - strData.length + strRow][strCol] );
-
+                  //     System.out.println("strData[strRow].charAt(strCol) = [" + strRow + "][" + strCol + "] " + strData[strRow].charAt(strCol) + " = " + imageData[MAX_HEIGHT - strData.length + strRow][strCol] );
                    }
                }
         }
