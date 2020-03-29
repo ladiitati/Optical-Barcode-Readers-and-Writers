@@ -101,7 +101,6 @@ class BarcodeImage implements Cloneable {
     }
 
     public void setPixel(int col, int row, boolean value) {
-//        System.out.println("col " + col + " row " + row);
         try {
             this.imageData[col][row] = value;
         } catch (Exception e) {
