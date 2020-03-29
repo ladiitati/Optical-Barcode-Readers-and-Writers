@@ -57,10 +57,16 @@ class BarcodeImage {
         if(checkSize == true){
         //Left Corner points   
        // if(checkSize(strData) == true){
-            for(int strCol = 0; strCol < strData.length - 1; strCol++){
-                System.out.println("strData[strCol] = [" + strCol + "] " + strData[strCol]);
-                for(int strRow = 0; strRow < strData[strCol].length() - 1; strRow++){
-                    System.out.println("strData[strRow].charAt(strRow) = [][" + strRow + "] " + strData[strCol].charAt(strRow));
+            for(int strRow = 0; strRow < strData.length - 1; strRow++){
+                for(int strCol = 0; strCol < strData[strRow].length() - 1; strCol++){
+                    System.out.println("strData[strRow].charAt(strCol) = [" + strRow + "][" + strCol + "] " + strData[strRow].charAt(strCol));
+
+                }
+            }
+        }
+    
+    }
+}
 
                 // for(int strRow = strData[strCol].length(); strRow >= 0; strRow --){
                 //     System.out.println("Col length = " + strData.length);
@@ -78,10 +84,3 @@ class BarcodeImage {
                     //  if(strData[strCol].charAt(strCol) == 't'){
                     //     System.out.println("!! t strData[strCol].charAt(strCol) "  + strData[strCol].charAt(strCol));
                     //  }
-                }
-            }
-        }
-    
-    }
-}
-
