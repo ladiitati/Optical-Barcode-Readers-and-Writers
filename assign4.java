@@ -4,8 +4,8 @@ public class assign4 {
     public static void main(String[] args) {
         String[] sImageIn =
         {
-           " a                                             ",
            "                                               ",
+           "   a                                           ",
            "                                               ",
            "     * * * * * * * * * * * * * * * * * * * * * ",
            "     *                                       * ",
@@ -18,7 +18,7 @@ public class assign4 {
            "     *****  ***  *  * *   ** ** **  *   * *    ",
            "     ***************************************** ",  
            "                                               ",
-           "                                            b  ",
+           "                                              b",
            "                                               "
   
         };
@@ -57,9 +57,23 @@ class BarcodeImage {
         if(checkSize == true){
         //Left Corner points   
        // if(checkSize(strData) == true){
-            for(int strRow = 0; strRow < strData.length - 1; strRow++){
-                for(int strCol = 0; strCol < strData[strRow].length() - 1; strCol++){
+            for(int strRow = 0; strRow < strData.length; strRow++){
+                for(int strCol = 0; strCol < strData[strRow].length(); strCol++){
                     System.out.println("strData[strRow].charAt(strCol) = [" + strRow + "][" + strCol + "] " + strData[strRow].charAt(strCol));
+                    if(strData[strRow].charAt(strCol) == '*'){
+                        beginOfArrayRow = strRow;
+                        beginOfArrayCol = strCol;
+                    }
+
+                }
+            }
+            for(int strRow = 0; strRow < strData.length; strRow++){
+                for(int strgit Col = 0; strCol < strData[strRow].length(); strCol++){
+                    System.out.println("strData[strRow].charAt(strCol) = [" + strRow + "][" + strCol + "] " + strData[strRow].charAt(strCol));
+                    if(strData[strRow].charAt(strCol) == '*'){
+                        beginOfArrayRow = strRow;
+                        beginOfArrayCol = strCol;
+                    }
 
                 }
             }
@@ -68,19 +82,3 @@ class BarcodeImage {
     }
 }
 
-                // for(int strRow = strData[strCol].length(); strRow >= 0; strRow --){
-                //     System.out.println("Col length = " + strData.length);
-                //     System.out.println("Row length " + strData[strCol].length());
-                    // System.out.println("col "  + strCol);
-                    // System.out.println("row = "  + strRow);
-
-                  //  System.out.println("array[" + strRow + "][" + strCol + "] = "  + strData[strCol].charAt(strCol));
-                    //  if(strData[strCol].charAt(strCol) == '*'){
-                    //     System.out.println("strData[strCol].charAt(strCol) "  + strData[strCol].charAt(strCol));
-                    //  }
-                    //  if(strData[strCol].charAt(strCol) == 'c'){
-                    //     System.out.println("!! C strData[strCol].charAt(strCol) "  + strData[strCol].charAt(strCol));
-                    //  }
-                    //  if(strData[strCol].charAt(strCol) == 't'){
-                    //     System.out.println("!! t strData[strCol].charAt(strCol) "  + strData[strCol].charAt(strCol));
-                    //  }
