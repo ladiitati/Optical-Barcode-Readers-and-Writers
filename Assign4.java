@@ -1,7 +1,5 @@
 import java.util.Arrays;
 
-import jdk.internal.jshell.tool.resources.l10n;
-
 public class Assign4 {
     public static void main(String[] args) {
         testPhaseTwo();
@@ -55,8 +53,7 @@ class BarcodeImage implements Cloneable {
         if (!checkSize(strData)) {
             return;
         }
-        ;
-        this.setImageData(image);
+            this.setImageData(image);
 
         for (int i = 0; i < strData.length; i++) {
             /**
@@ -138,14 +135,14 @@ class DataMatrix implements BarcodeIO {
     private int actualWidth;
     private int actualHeight;
     
-    DataMatrix() {
+    public DataMatrix() {
         this.text = "";
         this.image = new BarcodeImage();
         this.actualWidth = 0;
         this.actualHeight = 0;
     };
 
-    DataMatrix(BarcodeImage image) {
+    public DataMatrix(BarcodeImage image) {
         this();
         scan(image);
     }
@@ -163,7 +160,7 @@ class DataMatrix implements BarcodeIO {
         return false;
     }
 
-    public boolean scan(BarcodeImage iBarcodeImage){
+    public boolean scan(BarcodeImage image) {
         try {
             this.image = image.clone();
             this.cleanImage();
@@ -185,51 +182,6 @@ class DataMatrix implements BarcodeIO {
             throw new Error();
         }
         return cloneImage;
-    }
-}
-class DataMatrix implements BarcodeIO
-{
-    public static final char BLACK_CHAR = '*';
-    public static final char WHITE_CHAR = ' ';
-    private String text;
-    private BarcodeImage image;
-    private int actualWidth = 0;
-    private int actualHeight = 0;
-
-    public DataMatrix()
-    {
-        image = new BarcodeImage();
-        text = new String("");
-    }
-
-    public DataMatrix(String string)
-    {
-        text = new String(string);
-        image = new BarcodeImage();
-
-        actualWidth = string.length();
-
-        //other stuff maybe
-        generateImageFromText();
-
-
-    }
-
-    public DataMatrix(BarcodeImage bc)
-    {
-        image = bc.clone();
-        text = new String("");
-    }
-
-    public boolean scan(BarcodeImage bc)
-    {
-
-        return true;
-    }
-
-    public boolean readText(String text)
-    {
-        return true;
     }
 
     public boolean generateImageFromText()
@@ -354,5 +306,4 @@ class DataMatrix implements BarcodeIO
         }
         return height;
     }
-
 }
