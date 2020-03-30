@@ -1,5 +1,7 @@
 import java.util.Arrays;
 
+import jdk.internal.jshell.tool.resources.l10n;
+
 public class Assign4 {
     public static void main(String[] args) {
         testPhaseTwo();
@@ -126,4 +128,51 @@ class BarcodeImage implements Cloneable {
             System.out.println(Arrays.toString(image[i]));
         }
     }
+}
+class DataMatrix implements BarcodeIO {
+
+    public static final char BLACK_CHAR = '*';
+    public static final char WHITE_CHAR = ' ';
+    private BarcodeImage image;
+    private String text;
+    private int actualWidth;
+    private int actualHeight;
+    
+    DataMatrix() {
+        this.text = "";
+        this.image = new BarcodeImage();
+        this.actualWidth = 0;
+        this.actualHeight = 0;
+    };
+
+    DataMatrix(BarcodeImage image) {
+        this();
+        scan(image);
+    }
+
+    DataMatrix(String text) {
+        this();
+        this.readText(text);
+    }
+
+    public boolean readText(String text) {
+        if(text.length() < BarcodeImage.MAX_WIDTH){
+            this.text = text + "*";
+            return true;
+        }
+        return false;
+    }
+
+    public boolean scan(BarcodeImage iBarcodeImage){
+        try {
+            this.image = image.clone();
+            this.cleanImage();
+            this.actualWidth = this.computeSignalWidth();
+            this.actualHeight = this.computeSignalHeight();
+            return true;
+            }
+            catch(Exception e) {
+            return false;
+        }
+   }
 }
