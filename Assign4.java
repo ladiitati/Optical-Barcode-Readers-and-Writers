@@ -23,7 +23,7 @@ public class Assign4 {
                 "***********************************"
         };
         BarcodeImage b = new BarcodeImage(phaseTwoTest);
-        BarcodeImage c = b.clone();
+        BarcodeImage c = (BarcodeImage) b.clone();
         c.displayToConsole();
     }
 }
@@ -129,13 +129,12 @@ class BarcodeImage implements Cloneable {
     }
 
     @Override
-    public BarcodeImage clone() {
+    public Object clone() {
         BarcodeImage cloneImage;
         try {
-            cloneImage = (BarcodeImage) super.clone();
+            return (BarcodeImage) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new Error();
+            return null;
         }
-        return cloneImage;
     }
 }
