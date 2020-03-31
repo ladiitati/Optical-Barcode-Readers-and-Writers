@@ -1,31 +1,5 @@
 import java.util.Arrays;
 
-<<<<<<< Updated upstream
-public class Assign4 {
-    public static void main(String[] args) {
-        testPhaseTwo();
-    }
-
-    /**
-     * testPhaseTwo is only for the purpose of testing the
-     * BarcodeImage class. Feel free to delete later.
-     */
-    public static void testPhaseTwo() {
-        String[] phaseTwoTest = new String[]{
-                "* * * * * * * * * * * * * * * * * *",
-                "*                                 *",
-                "***** ** * **** ****** ** **** **  ",
-                "* **************      *************",
-                "**  *  *        *  *   *        *  ",
-                "* **  *     **    * *   * ****   **",
-                "**         ****   * ** ** ***   ** ",
-                "*   *  *   ***  *       *  ***   **",
-                "*  ** ** * ***  ***  *  *  *** *   ",
-                "***********************************"
-        };
-        BarcodeImage b = new BarcodeImage(phaseTwoTest);
-        b.displayToConsole();
-=======
 public class Assign4
 {
     public static void main(String[] args)
@@ -46,11 +20,12 @@ public class Assign4
 
         BarcodeImage bc = new BarcodeImage(sImageIn_3);
         DataMatrix dm = new DataMatrix(bc);
+        //Testing for rawImage
+        dm.displayRawImage();
         // First secret message
         dm.translateImageToText();
         dm.displayTextToConsole();
         dm.displayImageToConsole();
->>>>>>> Stashed changes
     }
 }
 
@@ -89,7 +64,7 @@ class BarcodeImage implements Cloneable {
              * in the matrix starting at the bottom left.
              * */
             for (int j = 0; j < strData[i].length(); j++) {
-                if (strData[i].charAt(j) == '*') {
+                if (strData[(strData.length - 1) - i].charAt(j) == '*') {
                     setPixel((MAX_HEIGHT - 1) - i, j, true);
                 } else {
                     setPixel((MAX_HEIGHT - 1) - i, j, false);
@@ -119,18 +94,17 @@ class BarcodeImage implements Cloneable {
         return imageData;
     }
 
-    public boolean getPixel(int col, int row) {
+    public boolean getPixel(int row, int col) {
         try {
-            return imageData[col][row];
+            return imageData[row][col];
         } catch (Exception e) {
             return false;
         }
     }
 
-    public void setPixel(int col, int row, boolean value) {
-//        System.out.println("col " + col + " row " + row);
+    public void setPixel(int row, int col, boolean value) {
         try {
-            this.imageData[col][row] = value;
+            this.imageData[row][col] = value;
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -154,47 +128,17 @@ class BarcodeImage implements Cloneable {
             System.out.println(Arrays.toString(image[i]));
         }
     }
-}
 
-class DataMatrix implements BarcodeIO {
-	  public static final char BLACK_CHAR = '*';
-	  public static final char WHITE_CHAR = ' ';
-	  private BarcodeImage image;
-	  private String text;
-	  private int actualWidth;
-	  private int actualHeight;
-	   
-    public boolean scan(BarcodeImage bc) {
-    	cleanImage();
-    	return true;
-    	}
-
-    public boolean readText(String text) {return true;}
-
-    public boolean generateImageFromText() {return true;}
-
-    public boolean translateImageToText() {return true;}
-
-    public void displayTextToConsole() {}
-
-    public void displayImageToConsole() {}
-    
-    private int computeSignalWidth(){
-    	int width = 0;
-    	//INCORRECT; change to look at bottom row
-    	for (int i = 0; i < BarcodeImage.MAX_WIDTH; i++) {
-    		if (image.getPixel(i, 0)) {
-    			width++;
-    		}
-    	}
-    	return width;
+    @Override
+    public BarcodeImage clone() {
+        BarcodeImage cloneImage;
+        try {
+            cloneImage = (BarcodeImage) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new Error();
+        }
+        return cloneImage;
     }
-<<<<<<< Updated upstream
-    private int computeSignalHeight(){
-    	int height = 0;
-    	for (int j = 0; j < BarcodeImage.MAX_HEIGHT; j++) {
-    		if (image.getPixel(0, j)) {
-=======
 }
 class DataMatrix implements BarcodeIO
 {
@@ -266,11 +210,6 @@ class DataMatrix implements BarcodeIO
     public void displayTextToConsole()
     {
         System.out.println(text);
-    }
-
-    public void displayImageToConsole()
-    {
-
     }
 
     private char readCharFromCol(int col)
@@ -346,55 +285,92 @@ class DataMatrix implements BarcodeIO
     }
     
     private int computeSignalWidth(){
+    	//Use after image is shifted; looks at bottommost row (max height)
     	int width = 0;
-    	//INCORRECT; change to look at bottom row
-    	for (int i = 0; i < BarcodeImage.MAX_WIDTH; i++) {
-    		if (image.getPixel(i, 0)) {
+    	for (int col = 0; col < BarcodeImage.MAX_WIDTH; col++) {
+    		if (image.getPixel(BarcodeImage.MAX_HEIGHT - 1, col)) {
     			width++;
     		}
     	}
     	return width;
     }
     private int computeSignalHeight(){
+    	//Use after image is shifted; looks at leftmost column (0)
     	int height = 0;
     	for (int row = 0; row < BarcodeImage.MAX_HEIGHT; row++) {
-    		if (image.getPixel(0, row)) {
->>>>>>> Stashed changes
+    		if (image.getPixel(row, 0)) {
     			height++;
     		}
     	}
     	return height;
     }
     
-    public void displayRawImage(){}
+    public void displayImageToConsole() {
+    	String outputImage = "";
+    	int height = computeSignalHeight();
+    	int width = computeSignalWidth();
+    	//Top border output
+    	for (int col = 0; col < width + 2; col++) {
+    		outputImage += "-";
+    	}
+    	outputImage += "\n";
+    	//Output for each row
+    	for (int row = BarcodeImage.MAX_HEIGHT - height; row < BarcodeImage.MAX_HEIGHT; row++) {
+    		outputImage += "|";
+    		for (int col = 0; col < width; col++) {
+    			if (image.getPixel(row, col)) {
+    				outputImage += BLACK_CHAR;
+    			}
+    			else {
+    				outputImage += WHITE_CHAR;
+    			}
+    		}
+    		outputImage += "|\n";
+    	}
+    	//Bottom border output
+    	for (int col = 0; col < width + 2; col++) {
+    		outputImage += "-";
+    	}
+    	System.out.println(outputImage);
+
+    }
+    
+    public void displayRawImage(){
+    	String outputImage = "";
+    	//Top border output
+    	for (int col = 0; col < BarcodeImage.MAX_WIDTH + 2; col++) {
+    		outputImage += "-";
+    	}
+    	outputImage += "\n";
+    	//Output for each row
+    	for (int row = 0; row < BarcodeImage.MAX_HEIGHT; row++) {
+    		outputImage += "|";
+    		for (int col = 0; col < BarcodeImage.MAX_WIDTH; col++) {
+    			if (image.getPixel(row, col)) {
+    				outputImage += BLACK_CHAR;
+    			}
+    			else {
+    				outputImage += WHITE_CHAR;
+    			}
+    		}
+    		outputImage += "|\n";
+    	}
+    	//Bottom border output
+    	for (int col = 0; col < BarcodeImage.MAX_WIDTH + 2; col++) {
+    		outputImage += "-";
+    	}
+    	System.out.println(outputImage);
+    }
     private void clearImage(){}
     
     private void cleanImage() {}
     private void moveImageToLowerLeft(){
     	//find max offset (blank spaces to bottom and right)
-<<<<<<< Updated upstream
-    	//locate first instance of existing pixel within barcode
-    	//find how many movements it took to reach that (offset)
-    	for (int i = 0; i < BarcodeImage.MAX_HEIGHT; i++) {
-    		if (image.getPixel(col, row)) {
-    			
-    		}
-    	}
-    	//use shiftImageDown and shiftImageLeft to move that number of offsets
-    }
-    
-    private void shiftImageDown(int offset){
-    	//move matrix down (offset number) of rows
-    	//make another helper function to prevent moving too many rows?
-    }
-    private void shiftImageLeft(int offset){
-    	//move matrix left (offset number) of columns
-    }
-=======
     	//locate first instance of existing pixel within barcode (upper left)
     	//find how many movements it took to reach that (offset)
     	/*shiftImageDown(findBottomMargin(findLeftMargin()));
     	shiftImageLeft(findLeftMargin());*/
+    	
 
     	}
     	//use shiftImageDown and shiftImageLeft to move that number of offsets
@@ -411,46 +387,44 @@ class DataMatrix implements BarcodeIO
     	
     }*/
     
-    private void shiftImage(int bottomMargin, int leftMargin) {
-    	BarcodeImage shiftedImage = new BarcodeImage();
-    	//find upper left corner of image
+    private void shiftImage (int bottomRow, int leftColumn) {
+    	boolean copiedPixel = false;
+    	int bottom = bottomRow;
+    	int left = leftColumn;
+    	//start at bottom left corner of barcode
+    	//move to bottom left corner of canvas
     	//traverse with for loops while using setPixel to set it in the shiftedImage
+    	for (int row = BarcodeImage.MAX_HEIGHT - 1; row >= 0; row --) {
+    		for (int col = 0; col < BarcodeImage.MAX_WIDTH; col++) {
+    			copiedPixel = image.getPixel(bottom - row, left - col);
+    			image.setPixel(row, col, copiedPixel);
+    		}
+    	}
     }
     
-    private int findLeftMargin() {
+    private int findLeftColumn() {
     	for (int row = 0; row < BarcodeImage.MAX_HEIGHT - 1; row++) {
     		for (int col = 0; col < BarcodeImage.MAX_WIDTH - 1; col++) {
     			if (image.getPixel(row, col)) {
-    				return col - 1;
+    				return col;
     				}
     			}
     		}
     	return 0;
     }
     
-    private int findBottomMargin(int leftMargin) {
+    private int findBottomRow(int leftColumn) {
     	int bottomMargin = 0;
+    	//Index location of bottom of barcode "canvas"
+    	int canvasBottom = BarcodeImage.MAX_HEIGHT - 1;
     	//Begin search at bottom of dimensions (max height)
-    	int maxHeight = BarcodeImage.MAX_HEIGHT - 1;
-    	for (int row = maxHeight; row >= 0; row--) {
-    		if (image.getPixel(row, leftMargin + 1) == false) {
+    	for (int row = canvasBottom; row >= 0; row--) {
+    		if (image.getPixel(row, leftColumn) == false) {
     			bottomMargin++;
     			}
     		}
-    		
-    	return bottomMargin;
+    	//Canvas - margin = location of bottom row
+    	return canvasBottom - bottomMargin;
     }
-    //actually don't need to calculate topMargin
-    //find it by max_height minus height of code minus bottomMargin?
-    /*
-    private int findTopMargin(int leftMargin) {
-    	int topMargin = 0;
-    	for (int row = 0; row < BarcodeImage.MAX_HEIGHT - 1; row++) {
-    		if (image.getPixel(row, leftMargin + 1) == false) {
-				topMargin++;
-			}
-    	}
-    }*/
->>>>>>> Stashed changes
 
 }
