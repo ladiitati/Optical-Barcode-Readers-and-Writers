@@ -132,10 +132,9 @@ class BarcodeImage implements Cloneable {
     public Object clone() {
         BarcodeImage cloneImage;
         try {
-            cloneImage = (BarcodeImage) super.clone();
+            return (BarcodeImage) super.clone();
         } catch (CloneNotSupportedException e) {
             return null;
         }
-        return (BarcodeImage) cloneImage;
     }
 }
