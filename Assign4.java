@@ -51,7 +51,7 @@ class BarcodeImage implements Cloneable {
         if (!checkSize(strData)) {
             return;
         }
-        ;
+
         this.setImageData(image);
 
         for (int i = 0; i < strData.length; i++) {
