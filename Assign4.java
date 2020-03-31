@@ -126,7 +126,7 @@ class BarcodeImage implements Cloneable {
     }
 
     @Override
-    public BarcodeImage clone() {
+    public Object clone() {
         BarcodeImage cloneImage;
         try {
             return (BarcodeImage) super.clone();
