@@ -54,7 +54,6 @@ class BarcodeImage implements Cloneable {
         if (!checkSize(strData)) {
             return;
         }
-        ;
         this.setImageData(image);
 
         for (int i = 0; i < strData.length; i++) {
@@ -120,14 +119,6 @@ class BarcodeImage implements Cloneable {
         return false;
     }
 
-    public void displayToConsole() {
-        boolean[][] image = this.getImageData();
-
-        for (int i = 0; i < MAX_HEIGHT; i++) {
-            System.out.println(Arrays.toString(image[i]));
-        }
-    }
-
     @Override
     public Object clone() {
         BarcodeImage cloneImage;
@@ -136,5 +127,163 @@ class BarcodeImage implements Cloneable {
         } catch (CloneNotSupportedException e) {
             return null;
         }
+    }
+
+    public void displayToConsole() {
+        boolean[][] image = this.getImageData();
+
+        for (int i = 0; i < MAX_HEIGHT; i++) {
+            System.out.println(Arrays.toString(image[i]));
+        }
+    }
+}
+
+class DataMatrix implements BarcodeIO {
+
+    public static final char BLACK_CHAR = '*';
+    public static final char WHITE_CHAR = ' ';
+    private BarcodeImage image;
+    private String text;
+    private int actualWidth;
+    private int actualHeight;
+
+
+    DataMatrix() {
+        this.text = "";
+        this.image = new BarcodeImage();
+        this.actualWidth = 0;
+        this.actualHeight = 0;
+    }
+
+    ;
+
+    DataMatrix(BarcodeImage image) {
+        this();
+        scan(image);
+    }
+
+    DataMatrix(String text) {
+        this();
+        this.readText(text);
+    }
+
+    public boolean readText(String text) {
+        if (text.length() < BarcodeImage.MAX_WIDTH) {
+            this.text = text + "*";
+            return true;
+        }
+        return false;
+    }
+
+    public boolean scan(BarcodeImage image) {
+        try {
+            this.image = (BarcodeImage) image.clone();
+            //  this.cleanImage();
+            this.actualWidth = this.computeSignalWidth();
+            this.actualHeight = this.computeSignalHeight();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean generateImageFromText() {
+
+        for (int i = 0; i < text.length(); i++) {
+            WriteCharToCol(i, text.charAt(i));
+        }
+        return true;
+    }
+
+    public boolean translateImageToText() {
+
+        actualWidth = 38;
+        for (int i = 1; i < actualWidth - 1; i++) {
+            text += readCharFromCol(i);
+        }
+
+        return true;
+    }
+
+    public void displayTextToConsole() {
+        System.out.println(text);
+    }
+
+    private char readCharFromCol(int col) {
+        String string = new String();
+
+        //for (int i = 0; i < 10; i++)
+        for (int i = 21; i < 29; i++) {
+            if (image.getPixel(i, col)) {
+                //1 - true
+                string += '1';
+            } else {
+                //0 - false
+                string += '0';
+            }
+        }
+
+        int decimal = Integer.parseInt(string, 2);
+        return ((char) decimal);
+    }
+
+    private boolean WriteCharToCol(int col, char ch) {
+        String string = new String(Integer.toBinaryString(getASCII(ch)));
+        System.out.println(string);
+
+
+        //write binary to column
+        int index = string.length() - 1;
+
+        //get height from accessor - replace 9
+        for (int i = 9; i > 9 - string.length(); i--) {
+            if (string.charAt(index) == '0') {
+                //0 - false
+                image.setPixel(col, i, false);
+            } else {
+                //1 - true
+                image.setPixel(col, i, true);
+            }
+            index--;
+        }
+
+        //write false to remaining cells
+        for (int i = 0; i > string.length(); i++) {
+            image.setPixel(col, i, false);
+        }
+
+        return true;
+    }
+
+    private int getASCII(char code) {
+        return (int) code;
+    }
+
+    public int getActualHeight() {
+        return actualHeight;
+    }
+
+    public int getActualWidth() {
+        return actualWidth;
+    }
+
+    private int computeSignalWidth() {
+        int width = 0;
+        for (int i = 0; i < BarcodeImage.MAX_WIDTH; i++) {
+            if (image.getPixel(i, 0)) {
+                width++;
+            }
+        }
+        return width;
+    }
+
+    private int computeSignalHeight() {
+        int height = 0;
+        for (int j = 0; j < BarcodeImage.MAX_HEIGHT; j++) {
+            if (image.getPixel(0, j)) {
+                height++;
+            }
+        }
+        return height;
     }
 }
