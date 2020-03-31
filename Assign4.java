@@ -23,7 +23,8 @@ public class Assign4 {
                 "***********************************"
         };
         BarcodeImage b = new BarcodeImage(phaseTwoTest);
-        b.displayToConsole();
+        BarcodeImage c = b.clone();
+        c.displayToConsole();
     }
 }
 
@@ -92,17 +93,17 @@ class BarcodeImage implements Cloneable {
         return imageData;
     }
 
-    public boolean getPixel(int col, int row) {
+    public boolean getPixel(int row, int col) {
         try {
-            return imageData[col][row];
+            return imageData[row][col];
         } catch (Exception e) {
             return false;
         }
     }
 
-    public void setPixel(int col, int row, boolean value) {
+    public void setPixel(int row, int col, boolean value) {
         try {
-            this.imageData[col][row] = value;
+            this.imageData[row][col] = value;
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -125,5 +126,16 @@ class BarcodeImage implements Cloneable {
         for (int i = 0; i < MAX_HEIGHT; i++) {
             System.out.println(Arrays.toString(image[i]));
         }
+    }
+
+    @Override
+    public BarcodeImage clone() {
+        BarcodeImage cloneImage;
+        try {
+            cloneImage = (BarcodeImage) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new Error();
+        }
+        return cloneImage;
     }
 }
