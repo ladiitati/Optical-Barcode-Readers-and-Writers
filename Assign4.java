@@ -23,7 +23,8 @@ public class Assign4 {
                 "***********************************"
         };
         BarcodeImage b = new BarcodeImage(phaseTwoTest);
-        b.displayToConsole();
+        BarcodeImage c = (BarcodeImage) b.clone();
+        c.displayToConsole();
     }
 }
 
@@ -91,17 +92,17 @@ class BarcodeImage implements Cloneable {
         return imageData;
     }
 
-    public boolean getPixel(int col, int row) {
+    public boolean getPixel(int row, int col) {
         try {
-            return imageData[col][row];
+            return imageData[row][col];
         } catch (Exception e) {
             return false;
         }
     }
 
-    public void setPixel(int col, int row, boolean value) {
+    public void setPixel(int row, int col, boolean value) {
         try {
-            this.imageData[col][row] = value;
+            this.imageData[row][col] = value;
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -116,20 +117,18 @@ class BarcodeImage implements Cloneable {
             }
         }
         return false;
-    } 
-    public BarcodeImage clone()
-   {
-      try
-      {
-         BarcodeImage cloned = (BarcodeImage)super.clone();
-         cloned.imageData = imageData.clone();
-         return cloned;
-      }
-      catch (CloneNotSupportedException e)
-      {
-         return null;
-      }  
-   }
+    }
+
+    @Override
+    public Object clone() {
+        BarcodeImage cloneImage;
+        try {
+            return (BarcodeImage) super.clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
+    }
+
     public void displayToConsole() {
         boolean[][] image = this.getImageData();
 
@@ -147,14 +146,16 @@ class DataMatrix implements BarcodeIO {
     private String text;
     private int actualWidth;
     private int actualHeight;
-    
-    
+
+
     DataMatrix() {
         this.text = "";
         this.image = new BarcodeImage();
         this.actualWidth = 0;
         this.actualHeight = 0;
-    };
+    }
+
+    ;
 
     DataMatrix(BarcodeImage image) {
         this();
@@ -167,78 +168,66 @@ class DataMatrix implements BarcodeIO {
     }
 
     public boolean readText(String text) {
-        if(text.length() < BarcodeImage.MAX_WIDTH){
+        if (text.length() < BarcodeImage.MAX_WIDTH) {
             this.text = text + "*";
             return true;
         }
         return false;
     }
 
-    public boolean scan(BarcodeImage image){
+    public boolean scan(BarcodeImage image) {
         try {
-            this.image = image.clone();
-          //  this.cleanImage();
+            this.image = (BarcodeImage) image.clone();
+            //  this.cleanImage();
             this.actualWidth = this.computeSignalWidth();
             this.actualHeight = this.computeSignalHeight();
             return true;
-            }
-            catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
-   }
+    }
 
-   public boolean generateImageFromText()
-    {
+    public boolean generateImageFromText() {
 
-        for (int i = 0; i < text.length(); i++)
-        {
+        for (int i = 0; i < text.length(); i++) {
             WriteCharToCol(i, text.charAt(i));
         }
         return true;
     }
 
-   public boolean translateImageToText()
-    {
+    public boolean translateImageToText() {
 
         actualWidth = 38;
-        for (int i = 1; i < actualWidth -1; i++)
-        {
+        for (int i = 1; i < actualWidth - 1; i++) {
             text += readCharFromCol(i);
         }
 
         return true;
     }
 
-    public void displayTextToConsole()
-    {
+    public void displayTextToConsole() {
         System.out.println(text);
     }
 
-   private char readCharFromCol(int col)
-    {
+    private char readCharFromCol(int col) {
         String string = new String();
 
         //for (int i = 0; i < 10; i++)
-        for (int i = 21; i < 29; i++)
-        {
-            if (image.getPixel(i, col))
-            {
+        for (int i = 21; i < 29; i++) {
+            if (image.getPixel(i, col)) {
                 //1 - true
                 string += '1';
-            }
-            else
-            {
+            } else {
                 //0 - false
                 string += '0';
             }
         }
 
-        int decimal = Integer.parseInt(string,2);
-        return ((char)decimal);
+        int decimal = Integer.parseInt(string, 2);
+        return ((char) decimal);
     }
 
-   private boolean WriteCharToCol(int col, char ch)
-    {
+    private boolean WriteCharToCol(int col, char ch) {
         String string = new String(Integer.toBinaryString(getASCII(ch)));
         System.out.println(string);
 
@@ -247,15 +236,11 @@ class DataMatrix implements BarcodeIO {
         int index = string.length() - 1;
 
         //get height from accessor - replace 9
-    for (int i = 9; i >  9 - string.length(); i--)
-    {
-            if (string.charAt(index) == '0')
-            {
+        for (int i = 9; i > 9 - string.length(); i--) {
+            if (string.charAt(index) == '0') {
                 //0 - false
                 image.setPixel(col, i, false);
-            }
-            else
-            {
+            } else {
                 //1 - true
                 image.setPixel(col, i, true);
             }
@@ -263,28 +248,26 @@ class DataMatrix implements BarcodeIO {
         }
 
         //write false to remaining cells
-        for (int i = 0; i > string.length(); i++)
-        {
+        for (int i = 0; i > string.length(); i++) {
             image.setPixel(col, i, false);
         }
 
         return true;
     }
-   private int getASCII(char code)
-    {
-        return (int)code;
+
+    private int getASCII(char code) {
+        return (int) code;
     }
 
-    public int getActualHeight()
-    {
+    public int getActualHeight() {
         return actualHeight;
     }
 
-    public int getActualWidth()
-    {
+    public int getActualWidth() {
         return actualWidth;
     }
-   private int computeSignalWidth(){
+
+    private int computeSignalWidth() {
         int width = 0;
         for (int i = 0; i < BarcodeImage.MAX_WIDTH; i++) {
             if (image.getPixel(i, 0)) {
@@ -293,7 +276,8 @@ class DataMatrix implements BarcodeIO {
         }
         return width;
     }
-   private int computeSignalHeight(){
+
+    private int computeSignalHeight() {
         int height = 0;
         for (int j = 0; j < BarcodeImage.MAX_HEIGHT; j++) {
             if (image.getPixel(0, j)) {
