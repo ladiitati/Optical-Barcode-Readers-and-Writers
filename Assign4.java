@@ -4,28 +4,67 @@ public class Assign4
 {
     public static void main(String[] args)
     {
-        String[] sImageIn_3 =
-                {
-                        "* * * * * * * * * * * * * * * * * * * ",
-                        "*                                    *",
-                        "**** *** **   ***** ****   *********  ",
-                        "* ************ ************ **********",
-                        "** *      *    *  * * *         * *   ",
-                        "***   *  *           * **    *      **",
-                        "* ** * *  *   * * * **  *   ***   *** ",
-                        "* *           **    *****  *   **   **",
-                        "****  *  * *  * **  ** *   ** *  * *  ",
-                        "**************************************"
-                };
+        String[] sImageIn =
+            {
+               "                                               ",
+               "                                               ",
+               "                                               ",
+               "     * * * * * * * * * * * * * * * * * * * * * ",
+               "     *                                       * ",
+               "     ****** **** ****** ******* ** *** *****   ",
+               "     *     *    ****************************** ",
+               "     * **    * *        **  *    * * *   *     ",
+               "     *   *    *  *****    *   * *   *  **  *** ",
+               "     *  **     * *** **   **  *    **  ***  *  ",
+               "     ***  * **   **  *   ****    *  *  ** * ** ",
+               "     *****  ***  *  * *   ** ** **  *   * *    ",
+               "     ***************************************** ",  
+               "                                               ",
+               "                                               ",
+               "                                               "
 
-        BarcodeImage bc = new BarcodeImage(sImageIn_3);
+            };    
+        String[] sImageIn_2 =
+            {
+                  "                                          ",
+                  "                                          ",
+                  "* * * * * * * * * * * * * * * * * * *     ",
+                  "*                                    *    ",
+                  "**** *** **   ***** ****   *********      ",
+                  "* ************ ************ **********    ",
+                  "** *      *    *  * * *         * *       ",
+                  "***   *  *           * **    *      **    ",
+                  "* ** * *  *   * * * **  *   ***   ***     ",
+                  "* *           **    *****  *   **   **    ",
+                  "****  *  * *  * **  ** *   ** *  * *      ",
+                  "**************************************    ",
+                  "                                          ",
+                  "                                          ",
+                  "                                          ",
+                  "                                          "
+
+            };
+
+        BarcodeImage bc = new BarcodeImage(sImageIn);
         DataMatrix dm = new DataMatrix(bc);
-        //Testing for rawImage
-        dm.displayRawImage();
         // First secret message
+        dm.scan(bc);
         dm.translateImageToText();
         dm.displayTextToConsole();
         dm.displayImageToConsole();
+        
+        // second secret message
+        bc = new BarcodeImage(sImageIn_2);
+        dm.scan(bc);
+        dm.translateImageToText();
+        dm.displayTextToConsole();
+        dm.displayImageToConsole();
+        
+        // create your own message
+        /*dm.readText("What a great resume builder this is!");
+        dm.generateImageFromText();
+        dm.displayTextToConsole();
+        dm.displayImageToConsole();*/
     }
 }
 
@@ -176,7 +215,10 @@ class DataMatrix implements BarcodeIO
 
     public boolean scan(BarcodeImage bc)
     {
-
+    	this.image = bc.clone();
+    	cleanImage();
+    	actualWidth = computeSignalWidth();
+    	actualHeight = computeSignalHeight();
         return true;
     }
 
@@ -197,8 +239,7 @@ class DataMatrix implements BarcodeIO
 
     public boolean translateImageToText()
     {
-
-        actualWidth = 38;
+    	text = "";
         for (int i = 1; i < actualWidth -1; i++)
         {
             text += readCharFromCol(i);
@@ -361,50 +402,53 @@ class DataMatrix implements BarcodeIO
     	}
     	System.out.println(outputImage);
     }
-    private void clearImage(){}
     
-    private void cleanImage() {}
-    private void moveImageToLowerLeft(){
-    	//find max offset (blank spaces to bottom and right)
-    	//locate first instance of existing pixel within barcode (upper left)
-    	//find how many movements it took to reach that (offset)
-    	/*shiftImageDown(findBottomMargin(findLeftMargin()));
-    	shiftImageLeft(findLeftMargin());*/
-    	
-
-    	}
-    	//use shiftImageDown and shiftImageLeft to move that number of offsets
-    
-/*    private void shiftImageDown(int offset){
-    	//move matrix down (offset number) of rows
-    	BarcodeImage shiftedDown = new BarcodeImage();
-    	
-    	
-    }
-    private void shiftImageLeft(int offset){
-    	//move matrix left (offset number) of columns
-    	BarcodeImage shiftedLeft = new BarcodeImage();
-    	
-    }*/
-    
-    private void shiftImage (int bottomRow, int leftColumn) {
-    	boolean copiedPixel = false;
-    	int bottom = bottomRow;
-    	int left = leftColumn;
-    	//start at bottom left corner of barcode
-    	//move to bottom left corner of canvas
-    	//traverse with for loops while using setPixel to set it in the shiftedImage
-    	for (int row = BarcodeImage.MAX_HEIGHT - 1; row >= 0; row --) {
+    private void clearImage(){
+    	for (int row = 0; row < BarcodeImage.MAX_HEIGHT; row++) {
     		for (int col = 0; col < BarcodeImage.MAX_WIDTH; col++) {
-    			copiedPixel = image.getPixel(bottom - row, left - col);
-    			image.setPixel(row, col, copiedPixel);
+    			image.setPixel(row, col, false);
     		}
     	}
     }
     
+    private void cleanImage() {
+    	shiftImageLeft(findLeftColumn());
+    	shiftImageDown(findBottomRow());
+    }
+    
+    private void shiftImageDown(int bottomRow){
+    	int rowCounter = bottomRow;
+    	//If image is not already located at bottom,
+    	//copy image one row at a time to the bottom, working upwards
+    	if (bottomRow < BarcodeImage.MAX_HEIGHT - 1) {
+        	for (int row = BarcodeImage.MAX_HEIGHT - 1; row >= 0; row --) {
+        		for (int col = 0; col < BarcodeImage.MAX_WIDTH; col++) {
+        			image.setPixel(row, col, image.getPixel(rowCounter, col));
+        		}
+        		rowCounter--;
+        	}
+    	}
+    	
+    }
+    private void shiftImageLeft(int leftColumn){
+    	//If image is not already located at left,
+    	//copy image one column at a time to the left, working to the right
+    	int colCounter = leftColumn;
+    	if (leftColumn > 0) {
+        	for (int col = 0; col < BarcodeImage.MAX_WIDTH; col++) {
+        		for (int row = 0; row < BarcodeImage.MAX_HEIGHT; row++) {
+        			image.setPixel(row, col,image.getPixel(row, colCounter));
+        		}
+        		colCounter++;
+        	}
+    	}
+    }
+    
     private int findLeftColumn() {
-    	for (int row = 0; row < BarcodeImage.MAX_HEIGHT - 1; row++) {
-    		for (int col = 0; col < BarcodeImage.MAX_WIDTH - 1; col++) {
+    	//Begin search at upper left corner and move down
+    	for (int row = 0; row < BarcodeImage.MAX_HEIGHT; row++) {
+    		for (int col = 0; col < BarcodeImage.MAX_WIDTH; col++) {
+    			//Once pixel is located, return column location
     			if (image.getPixel(row, col)) {
     				return col;
     				}
@@ -413,18 +457,17 @@ class DataMatrix implements BarcodeIO
     	return 0;
     }
     
-    private int findBottomRow(int leftColumn) {
-    	int bottomMargin = 0;
-    	//Index location of bottom of barcode "canvas"
-    	int canvasBottom = BarcodeImage.MAX_HEIGHT - 1;
-    	//Begin search at bottom of dimensions (max height)
-    	for (int row = canvasBottom; row >= 0; row--) {
-    		if (image.getPixel(row, leftColumn) == false) {
-    			bottomMargin++;
+    private int findBottomRow() {
+    	//Begin search at bottom left of corner and move up
+    	for (int row = BarcodeImage.MAX_HEIGHT - 1; row >= 0; row--) {
+    		for (int col = 0; col < BarcodeImage.MAX_WIDTH; col++) {
+    			//Once pixel is located, return row location
+    			if (image.getPixel(row, col)) {
+    				return row;
+    				}
     			}
     		}
-    	//Canvas - margin = location of bottom row
-    	return canvasBottom - bottomMargin;
+    	return 0;
     }
 
 }
