@@ -136,6 +136,6 @@ class BarcodeImage implements Cloneable {
         } catch (CloneNotSupportedException e) {
             return null;
         }
-        return BarcodeImage.class.cast(cloneImage);
+        return (BarcodeImage) cloneImage;
     }
 }
