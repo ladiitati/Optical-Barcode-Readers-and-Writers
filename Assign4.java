@@ -2,29 +2,26 @@ import java.util.Arrays;
 
 public class Assign4 {
     public static void main(String[] args) {
-        testPhaseTwo();
-    }
+        String[] sImageIn_3 =
+                {
+                        "* * * * * * * * * * * * * * * * * * * ",
+                        "*                                    *",
+                        "**** *** **   ***** ****   *********  ",
+                        "* ************ ************ **********",
+                        "** *      *    *  * * *         * *   ",
+                        "***   *  *           * **    *      **",
+                        "* ** * *  *   * * * **  *   ***   *** ",
+                        "* *           **    *****  *   **   **",
+                        "****  *  * *  * **  ** *   ** *  * *  ",
+                        "**************************************"
+                };
 
-    /**
-     * testPhaseTwo is only for the purpose of testing the
-     * BarcodeImage class. Feel free to delete later.
-     */
-    public static void testPhaseTwo() {
-        String[] phaseTwoTest = new String[]{
-                "* * * * * * * * * * * * * * * * * *",
-                "*                                 *",
-                "***** ** * **** ****** ** **** **  ",
-                "* **************      *************",
-                "**  *  *        *  *   *        *  ",
-                "* **  *     **    * *   * ****   **",
-                "**         ****   * ** ** ***   ** ",
-                "*   *  *   ***  *       *  ***   **",
-                "*  ** ** * ***  ***  *  *  *** *   ",
-                "***********************************"
-        };
-        BarcodeImage b = new BarcodeImage(phaseTwoTest);
-        BarcodeImage c = (BarcodeImage) b.clone();
-        c.displayToConsole();
+        BarcodeImage bc = new BarcodeImage(sImageIn_3);
+        DataMatrix dm = new DataMatrix(bc);
+        // First secret message
+        dm.translateImageToText();
+        dm.displayTextToConsole();
+//        dm.displayImageToConsole();
     }
 }
 
@@ -39,7 +36,7 @@ interface BarcodeIO {
 
     public void displayTextToConsole();
 
-    public void displayImageToConsole();
+//    public void displayImageToConsole();
 }
 
 class BarcodeImage implements Cloneable {
@@ -54,6 +51,7 @@ class BarcodeImage implements Cloneable {
         if (!checkSize(strData)) {
             return;
         }
+
         this.setImageData(image);
 
         for (int i = 0; i < strData.length; i++) {
@@ -119,6 +117,14 @@ class BarcodeImage implements Cloneable {
         return false;
     }
 
+    public void displayToConsole() {
+        boolean[][] image = this.getImageData();
+
+        for (int i = 0; i < MAX_HEIGHT; i++) {
+            System.out.println(Arrays.toString(image[i]));
+        }
+    }
+
     @Override
     public Object clone() {
         BarcodeImage cloneImage;
@@ -126,14 +132,6 @@ class BarcodeImage implements Cloneable {
             return (BarcodeImage) super.clone();
         } catch (CloneNotSupportedException e) {
             return null;
-        }
-    }
-
-    public void displayToConsole() {
-        boolean[][] image = this.getImageData();
-
-        for (int i = 0; i < MAX_HEIGHT; i++) {
-            System.out.println(Arrays.toString(image[i]));
         }
     }
 }
