@@ -1,4 +1,19 @@
+/**************************************************************
+Tatiana Adams, Ryan Barrett, Matthew Taylor, Rowena Terrado
+31 March 2020
+CST 338 Software Design
+Assignment 4: Optical Barcode Readers and Writer
+
+This program is a barcode reader and writer, it can translate a 1D array barcode
+image to text and it can generate a barcode from a given string. Our BarcodeIO 
+implements the methods in the DataMatrix class which entails scanning of a 
+barcode image, creating a copy of an image, translating barcode image into text,
+generating a barcode image from text, and displaying both the translated text 
+and generated barcode. The Barcode class is used to covert the given 1D array 
+barcode image to a 2D array of Booleans for further manipulation in that 
+DataMatrix class. This class also performs the barcode image coping as well.
 import java.util.Arrays;
+**************************************************************/
 
 public class Assign4
 {
