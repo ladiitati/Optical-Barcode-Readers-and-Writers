@@ -204,7 +204,7 @@ class DataMatrix implements BarcodeIO
     private int actualWidth = 0;
     private int actualHeight = 0;
 
-
+    //constructors
     DataMatrix() {
         this.text = "";
         this.image = new BarcodeImage();
@@ -221,7 +221,7 @@ class DataMatrix implements BarcodeIO
         this();
         this.readText(text);
     }
-
+    //sets object text
     public boolean readText(String text) {
         if (text.length() < BarcodeImage.MAX_WIDTH) {
             this.text = text;
@@ -229,7 +229,7 @@ class DataMatrix implements BarcodeIO
         }
         return false;
     }
-
+    //scans object and creates a clone
     public boolean scan(BarcodeImage image) {
         try {
             this.image = (BarcodeImage) image.clone();
