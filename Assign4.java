@@ -45,19 +45,6 @@ public class Assign4
                         "                                          "
 
                 };
-        String[] sImageIn_3 =
-                {
-                        "* * * * * * * * * * * * * * * * * * * ",
-                        "*                                    *",
-                        "**** *** **   ***** ****   *********  ",
-                        "* ************ ************ **********",
-                        "** *      *    *  * * *         * *   ",
-                        "***   *  *           * **    *      **",
-                        "* ** * *  *   * * * **  *   ***   *** ",
-                        "* *           **    *****  *   **   **",
-                        "****  *  * *  * **  ** *   ** *  * *  ",
-                        "**************************************"
-                };
 
         //First Secret Message
         BarcodeImage bc1 = new BarcodeImage(sImageIn);
@@ -75,14 +62,7 @@ public class Assign4
         dm2.displayTextToConsole();
         dm2.displayImageToConsole();
 
-        //Third Secret Message
-        BarcodeImage bc3 = new BarcodeImage(sImageIn_3);
-        DataMatrix dm3 = new DataMatrix(bc3);
-        // First secret message
-        dm3.translateImageToText();
-        dm3.displayTextToConsole();
-        dm3.displayImageToConsole();
-
+        //Test set image from text
         DataMatrix dm4 = new DataMatrix("Test Encoded Message.");
         // First secret message
         dm4.generateImageFromText();
@@ -249,22 +229,27 @@ class DataMatrix implements BarcodeIO
 
     public boolean generateImageFromText()
     {
-        for (int i = 1; i < text.length(); i++)
+        if (text.length() > BarcodeImage.MAX_WIDTH)
         {
-            WriteCharToCol(i, text.charAt(i));
+            return false;
         }
+        else
+        {
+            for (int i = 1; i < text.length(); i++)
+            {
+                WriteCharToCol(i, text.charAt(i));
+            }
 
-        generateEdges();
-        cleanImage();
-        actualHeight = computeSignalHeight();
-
-        return true;
+            generateEdges();
+            cleanImage();
+            actualHeight = computeSignalHeight();
+            return true;
+        }
     }
 
     private void generateEdges()
     {
         actualWidth = text.length();
-
 
         //Left Edge
         for (int i = 0; i < 10; i++ )
@@ -291,14 +276,21 @@ class DataMatrix implements BarcodeIO
             }
         }
     }
+
     public boolean translateImageToText()
     {
-        for (int i = 1; i < actualWidth - 1; i++)
+        if (actualWidth == 0)
         {
-            text += readCharFromCol(i);
+            return false;
         }
-
-        return true;
+        else
+        {
+            for (int i = 1; i < actualWidth - 1; i++)
+            {
+                text += readCharFromCol(i);
+            }
+            return true;
+        }
     }
 
     public void displayTextToConsole()
@@ -333,14 +325,12 @@ class DataMatrix implements BarcodeIO
             outputImage += "-";
         }
         System.out.println(outputImage);
-
     }
 
     private char readCharFromCol(int col)
     {
         String string = new String();
 
-        //for (int i = 0; i < 10; i++)
         for (int i = 21; i < 29; i++)
         {
             if (image.getPixel(i, col))
@@ -366,29 +356,35 @@ class DataMatrix implements BarcodeIO
         //write binary to column
         int index = string.length() - 1;
 
-        //get height from accessor - replace 9
-        for (int i = 8; i >  8 - string.length(); i--)
+        if (string.length() == 0)
         {
-            if (string.charAt(index) == '0')
-            {
-                //0 - false
-                image.setPixel(i, col, false);
-            }
-            else
-            {
-                //1 - true
-                image.setPixel(i, col, true);
-            }
-            index--;
+            return false;
         }
-
-        //write false to remaining cells
-        for (int i = 0; i > string.length() - 1; i++)
+        else
         {
-            image.setPixel(col, i, false);
-        }
+            for (int i = 8; i > 8 - string.length(); i--)
+            {
+                if (string.charAt(index) == '0')
+                {
+                    //0 - false
+                    image.setPixel(i, col, false);
+                }
+                else
+                {
+                    //1 - true
+                    image.setPixel(i, col, true);
+                }
+                index--;
+            }
 
-        return true;
+            //write false to remaining cells
+            for (int i = 0; i > string.length() - 1; i++)
+            {
+                image.setPixel(col, i, false);
+            }
+
+            return true;
+        }
     }
 
     private int getASCII(char code)
